@@ -36,7 +36,7 @@ app.use(express.static('./public'));
 app.get('/new', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
-  //Line 36 corresponds with number 2 of the diagram. Line 40 is routing the '/new' request and returning 'new.html' file as the response, there isn't interaction with the client-side other than routing to 'new.html'. It would be considered a 'read' part of CRUD with no interaction to the client-side data.
+  //Line 40 corresponds with number 5 of the diagram. Line 40 is routing the '/new' request and returning 'new.html' file as the response, there isn't interaction with the client-side other than routing to 'new.html'. It would be considered a 'read' part of CRUD with no interaction to the client-side data.
   response.sendFile('new.html', {root: './public'});
 });
 
@@ -45,7 +45,7 @@ app.get('/new', function(request, response) {
 app.get('/articles', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
-  // Line 49 corresponds with number 3 of the WRRC diagram. In the article.js, on line 46, Article.fetchAll is interacting with the data on '/articles'. fetchAll function invokes the Article.loadAll function, and the callback function of Article.initIndexPage on 'index.html'. The read part of CRUD is being enacted by the code, as it reads the data from articles database.
+  // Line 49 corresponds with number 3 of the WRRC diagram. Line 51 is number 5 in the WRRC diagram. In the article.js, on line 46, Article.fetchAll is interacting with the data on '/articles'. fetchAll function invokes the Article.loadAll function, and the callback function of Article.initIndexPage on 'index.html'. The read part of CRUD is being enacted by the code, as it reads the data from articles database.
   client.query('SELECT * FROM articles')
   .then(function(result) {
     response.send(result.rows);
@@ -84,7 +84,7 @@ app.post('/articles', function(request, response) {
 app.put('/articles/:id', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
-  // Line 88 corresponds with number 3 of the WRRC diagram. The response.send on line 105 would be considered the number 5 of the diagram. The method 'Article.prototype.updateRecord' on line 89 in 'article.js' uses the 'articles/:id' that this function updates. This method isn't called anywhere. This would be considered the update part of CRUD. 
+  // Line 88 corresponds with number 3 of the WRRC diagram. The response.send on line 105 would be considered the number 5 of the diagram. The method 'Article.prototype.updateRecord' on line 89 in 'article.js' uses the 'articles/:id' that this function updates. This method isn't called anywhere. This would be considered the update part of CRUD.
   client.query(
     `UPDATE articles
     SET
@@ -112,6 +112,7 @@ app.put('/articles/:id', function(request, response) {
 app.delete('/articles/:id', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
+  //Line 116-119 corresponds to number 3 of the WRRC diagram. line 121 is corresponds to number 5 to the WRRC diagram. This route is being invoked in the 'Article.prototype.deleteRecord' method in line 78 of article.js which would delete a single article using the article id provided in the url. This does not interact with other portions of the blog. This is the Delete portion of the CRUD.
   client.query(
     `DELETE FROM articles WHERE article_id=$1;`,
     [request.params.id]
@@ -127,6 +128,7 @@ app.delete('/articles/:id', function(request, response) {
 app.delete('/articles', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
+  //line 132-134 corresponds to number 3 of the WRRC diagram. Line 136 corresponds to number 5 of the WRRC diagram. This route is being invoked at the Article.truncateTable in line 59 of articles.js. This method is currently not being invoked. This will be the Delete part of the CRUD.
   client.query(
     'DELETE FROM articles;'
   )
@@ -140,6 +142,7 @@ app.delete('/articles', function(request, response) {
 
 // COMMENT: What is this function invocation doing?
 // Put your response here...
+// This function will try to create the articles table if it currently does not exist and then call the loadArticles function which populates the table with the data from the /public/data/hackerIpsum.json
 loadDB();
 
 app.listen(PORT, function() {
@@ -152,6 +155,7 @@ app.listen(PORT, function() {
 function loadArticles() {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
+  // Line 159  and  line 169-175 corresponds to number 3 WRRC diagram. This function is not invoked by the client-side blog app. Line 159 is the Read on CRUD and line 169-175 is the Create in CRUD.
   client.query('SELECT COUNT(*) FROM articles')
   .then(result => {
     // REVIEW: result.rows is an array of objects that Postgres returns as a response to a query.
@@ -178,6 +182,7 @@ function loadArticles() {
 function loadDB() {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
+  //Line 186-195 corresponds to number 3 in WRRC. This function is not interacting with the client-side blog app. Line 186-195 is the Create portion of CRUD if the table doesn't exist.
   client.query(`
     CREATE TABLE IF NOT EXISTS articles (
       article_id SERIAL PRIMARY KEY,
