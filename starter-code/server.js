@@ -3,6 +3,7 @@
 // TODO: Install and require the NPM Postgres package 'pg' into your server.js, and ensure that it is then listed as a dependency in your package.json
 const fs = require('fs');
 const express = require('express');
+const pg = require('pg');
 
 // REVIEW: Require in body-parser for post requests in our server. If you want to know more about what this does, read the docs!
 const bodyParser = require('body-parser');
@@ -19,7 +20,7 @@ const conString = 'postgres://localhost:5432';
 //       This is how it knows the URL and, for Windows and Linux users, our username and password for our
 //       database when client.connect is called on line 26. Thus, we need to pass our conString into our
 //       pg.Client() call.
-const client = new pg.Client('something needs to go here... read the instructions above!');
+const client = new pg.Client(conString);
 
 // REVIEW: Use the client object to connect to our DB.
 client.connect();
@@ -35,6 +36,7 @@ app.use(express.static('./public'));
 app.get('/new', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
+  //Line 36 corresponds with number 2 of the diagram. Line 40 is routing the '/new' request and returning 'new.html' file as the response, there isn't interaction with the client-side other than routing to 'new.html'. It would be considered a 'read' part of CRUD with no interaction to the client-side data.
   response.sendFile('new.html', {root: './public'});
 });
 
@@ -43,6 +45,7 @@ app.get('/new', function(request, response) {
 app.get('/articles', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
+  // Line 49 corresponds with number 3 of the WRRC diagram. In the article.js, on line 46, Article.fetchAll is interacting with the data on '/articles'. fetchAll function invokes the Article.loadAll function, and the callback function of Article.initIndexPage on 'index.html'. The read part of CRUD is being enacted by the code, as it reads the data from articles database.
   client.query('SELECT * FROM articles')
   .then(function(result) {
     response.send(result.rows);
@@ -55,6 +58,7 @@ app.get('/articles', function(request, response) {
 app.post('/articles', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
+  // Line 61 corresponds with number 3 of the WRRC diagram. Line 70 on article.js with the method 'Article.prototype.insertRecord'. This method does not invoke another function of the blog, it is being invoked. It would be a create on the CRUD.
   client.query(
     `INSERT INTO
     articles(title, author, "authorUrl", category, "publishedOn", body)
@@ -80,6 +84,7 @@ app.post('/articles', function(request, response) {
 app.put('/articles/:id', function(request, response) {
   // COMMENT: What number(s) of the full-stack-diagram.png image correspond to the following line of code? Identify which line(s) of code from the client-side blog app are interacting with this particular piece of `server.js`, and the name of the method. Do those lines of code interact with or invoke a different portion of the blog, and if so, where? What part of CRUD is being enacted/managed by this particular piece of code?
   // Put your response here...
+  // Line 88 corresponds with number 3 of the WRRC diagram. The response.send on line 105 would be considered the number 5 of the diagram. The method 'Article.prototype.updateRecord' on line 89 in 'article.js' uses the 'articles/:id' that this function updates. This method isn't called anywhere. This would be considered the update part of CRUD. 
   client.query(
     `UPDATE articles
     SET
